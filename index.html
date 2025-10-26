@@ -30,16 +30,18 @@
         if (!response.ok) throw new Error('API 호출 실패');
         const files = await response.json();
 
+        let count = 1;
         files.forEach(file => {
   if(file.type === 'file' && file.name.endsWith('.html')) {
     const li = document.createElement('li');
     const a = document.createElement('a');
     // GitHub Pages용 경로로 변경
     a.href = `https://bobostar-ai.github.io/my-html-story/${file.name}`;
-    a.textContent = file.name;
+    a.textContent = `${count}. ${file.name}`;
     a.target = "_blank";
     li.appendChild(a);
     ul.appendChild(li);
+    count++;
   }
 });
 
