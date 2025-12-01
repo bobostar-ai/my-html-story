@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5060 AI 수익화 특강</title>
+    <!-- Reveal.js CSS (프레젠테이션 엔진) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+    <!-- Tailwind CSS for custom styling inside slides -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts: Noto Sans KR 적용 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 기본 폰트 설정 및 색상 */
+        .reveal {
+            font-family: 'Noto Sans KR', sans-serif !important;
+            color: #333;
+        }
+        
+        /* 강조색 (로얄 블루) */
+        .text-accent {
+            color: #2563EB; 
+        }
+        .bg-accent {
+            background-color: #2563EB;
+        }
+
+        /* 슬라이드 제목 및 본문 가독성 */
+        .reveal h1, .reveal h2, .reveal h3 {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 700;
+            text-transform: none;
+            line-height: 1.3;
+        }
+        
+        /* 카드 스타일 */
+        .card {
+            background: #f8fafc;
+            border-left: 6px solid #2563EB;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: left;
+            border-radius: 8px;
+        }
+
+        /* 그래프 애니메이션 */
+        .bar-grow {
+            transform-origin: bottom;
+            animation: grow 1.5s ease-out forwards;
+        }
+        @keyframes grow {
+            from { transform: scaleY(0); }
+            to { transform: scaleY(1); }
+        }
+        /* 로딩 스피너 스타일 (사용되지 않지만 혹시 몰라 유지) */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #2563EB;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- Slide 1: Title (인생 2막, AI 비서와 함께 월급 만들기) -->
+            <section data-background-gradient="linear-gradient(135deg, #f5f7fa 10%, #c3cfe2 100%)">
+                <div class="flex flex-col items-center justify-center h-full text-center">
+                    <p class="text-xl text-gray-600 font-bold tracking-widest mb-4">5060 특별 기획 특강</p>
+                    <h1 class="text-6xl font-black mb-6 text-gray-800">
+                        인생 2막,<br>
+                        <span class="text-accent">AI 비서</span>와 함께<br>
+                        월급 만들기
+                    </h1>
+                    <div class="w-24 h-2 bg-accent mb-8 rounded"></div>
+                    <p class="text-2xl text-gray-700 font-medium">기술은 AI가, 지혜는 내가.</p>
+
+                    <!-- 날짜 및 강사 정보 (첫 슬라이드에 추가) -->
+                    <div class="mt-8 text-xl text-gray-700 font-medium">
+                        2025년 12월 5일<br>
+                        강사: 서현(필요한)
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 1.5: Reality Check (노인 빈곤율 그래프) -->
+            <section>
+                <h2 class="text-4xl font-bold mb-8 text-left border-b-4 border-gray-200 pb-4">우리가 직면한 현실</h2>
+                
+                <div class="flex flex-col items-center justify-center h-full">
+                    <div class="text-center mb-10">
+                        <h3 class="text-3xl font-bold text-gray-700">OECD 노인 빈곤율 <span class="text-red-500 font-black text-4xl ml-2">압도적 1위</span></h3>
+                        <p class="text-gray-500 mt-2 text-lg">준비되지 않은 노후는 누구에게나 찾아올 수 있습니다. (2023년 통계청 최신 자료 기준)</p>
+                    </div>
+
+                    <!-- Graph Container -->
+                    <div class="flex items-end justify-center gap-16 w-full max-w-4xl h-80 relative pt-10">
+                        
+                        <!-- OECD Bar (14.9%) - Fragment Index 0 -->
+                        <div class="flex flex-col items-center group w-32">
+                            <div class="text-2xl font-bold text-gray-400 mb-3 fragment fade-up" data-fragment-index="0">14.9%</div>
+                            <div class="w-full bg-gray-300 rounded-t-lg relative bar-grow fragment" style="height: 105px;" data-fragment-index="0"></div>
+                            <div class="mt-4 text-xl font-bold text-gray-500">OECD 평균</div>
+                        </div>
+
+                        <!-- Korea Bar (39.7%) - Fragment Index 1 -->
+                        <div class="flex flex-col items-center group w-32">
+                            <div class="text-4xl font-black text-red-500 mb-3 fragment fade-up" data-fragment-index="1">39.7%</div>
+                            <div class="w-full bg-red-500 rounded-t-lg shadow-xl relative bar-grow fragment" style="height: 275px; animation-delay: 0.5s;" data-fragment-index="1">
+                                <!-- Highlight Badge 삭제됨 -->
+                            </div>
+                            <div class="mt-4 text-2xl font-bold text-gray-800">대한민국</div>
+                        </div>
+
+                    </div>
+                    
+                    <!-- Message Box - Fragment Index 2 -->
+                    <div class="mt-12 p-4 bg-red-50 rounded-lg text-center border border-red-100 fragment fade-in" data-fragment-index="2">
+                        <p class="text-xl text-gray-700">
+                            이제 단순 근로 소득만으로는 부족합니다.<br>
+                            <span class="font-bold text-red-600">새로운 도구(AI)</span>를 통한 <span class="font-bold text-blue-600">추가 수익 파이프라인</span>이 필수입니다.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 2: Intro/Problem (AI는 젊은 사람들만? -> 아니다) -->
+            <section>
+                <h2 class="text-4xl font-bold mb-10 text-left border-b-4 border-gray-200 pb-4">혹시 이런 생각 하시나요?</h2>
+                <div class="grid grid-cols-1 gap-8">
+                    <div class="card fragment fade-up">
+                        <h3 class="text-2xl font-bold mb-2">😟 "AI? 그거 젊은 사람들만 하는 거 아니야?"</h3>
+                    </div>
+                    <div class="card fragment fade-up">
+                        <h3 class="text-2xl font-bold mb-2">😓 "컴퓨터도 잘 못 다루는데 내가 어떻게..."</h3>
+                    </div>
+                    <div class="card fragment fade-up bg-blue-50 border-red-500 border-l-8">
+                        <h3 class="text-3xl font-black text-accent"> 아닙니다. <br>오히려 중년에게 더 유리합니다.</h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 3: Concept Change (AI는 똑똑한 비서) -->
+            <section>
+                <div class="flex flex-col items-center">
+                    <h2 class="text-5xl font-bold mb-12">AI는 <span class="text-accent">'똑똑한 비서'</span>입니다</h2>
+                    <div class="flex justify-center items-center gap-12 w-full">
+                        <div class="text-center w-1/3 p-6 bg-white rounded-xl shadow-lg">
+                            <div class="text-7xl mb-4">👨‍💼</div>
+                            <h3 class="text-3xl font-bold">나 (사장님)</h3>
+                            <p class="text-gray-600 text-xl mt-2">지시, 판단, <span class="font-bold">경험</span> 제공</p>
+                        </div>
+                        <div class="text-4xl text-gray-400 font-black">🤝</div>
+                        <div class="text-center w-1/3 p-6 bg-white rounded-xl shadow-lg">
+                            <div class="text-7xl mb-4">🤖</div>
+                            <h3 class="text-3xl font-bold">AI (비서)</h3>
+                            <p class="text-gray-600 text-xl mt-2">자료조사, 초안작성, 번역</p>
+                        </div>
+                    </div>
+                    <div class="mt-12 p-8 bg-indigo-50 border-l-4 border-indigo-400 rounded-lg w-3/4 shadow-inner">
+                        <p class="text-3xl font-bold text-center text-indigo-800">"타자만 칠 줄 알면, <br>최고의 비서를 부릴 수 있습니다.<br>현재는 말(음성)로 해도 됩니다."</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 4: Method 1 (글쓰기로 수익화) -->
+            <section>
+                <h2 class="text-4xl font-bold mb-8 text-left"><span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full mr-2">방법 1</span> 글쓰기로 수익화</h2>
+                <div class="grid grid-cols-2 gap-10 items-start">
+                    <!-- Left: Core Concept -->
+                    <div>
+                        <ul class="text-2xl space-y-8 list-none ml-0">
+                            <li class="fragment">✅ <b>블로그 포스팅</b><br><span class="text-gray-500 text-xl">건강, 등산, 요리 등 취미/경험 공유</span></li>
+                            <li class="fragment">✅ <b>전자책 출판</b><br><span class="text-gray-500 text-xl">30년 직장 생활 노하우 정리</span></li>
+                            <li class="fragment">✅ <b>수필/에세이</b><br><span class="text-gray-500 text-xl">내 인생 이야기를 AI가 윤문</span></li>
+                        </ul>
+                    </div>
+                    <!-- Right: AI Prompt Example & Links -->
+                    <div class="flex flex-col gap-6">
+                        <div class="bg-gray-800 text-white p-8 rounded-xl text-xl font-mono shadow-2xl h-full flex flex-col justify-center">
+                            <p class="text-green-400 font-bold mb-4">// AI에게 이렇게 지시하세요.</p>
+                            <p class="leading-relaxed">"내가 30년 동안 영업직에서 일하며 겪은 진상 고객 대처법 5가지를 초안으로 써줘. 문체는 정중하고 친절하게."</p>
+                        </div>
+                        
+                        <!-- NEW: Link Block for AI tools -->
+                        <div class="mt-4 flex justify-center space-x-8">
+                            <a href="https://gemini.google.com/app" target="_blank" class="flex items-center space-x-2 p-3 bg-white rounded-xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6">
+                                    <path d="M12 2L16.5 6.5L12 11L7.5 6.5L12 2Z" fill="#F9AB00"/>
+                                    <path d="M12 13L16.5 17.5L12 22L7.5 17.5L12 13Z" fill="#4285F4"/>
+                                    <path d="M7.5 6.5L12 11L7.5 15.5L3 11L7.5 6.5Z" fill="#34A853"/>
+                                    <path d="M16.5 6.5L21 11L16.5 15.5L12 11L16.5 6.5Z" fill="#EA4335"/>
+                                </svg>
+                                <span class="text-lg font-bold text-gray-800">Gemini 바로가기</span>
+                            </a>
+                            <a href="https://chatgpt.com/" target="_blank" class="flex items-center space-x-2 p-3 bg-white rounded-xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#10A37F" class="w-6 h-6">
+                                    <path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-0.9 2-2V4C22 2.9 21.1 2 20 2zM10.8 15L12 12.8L13.2 15H10.8zM14.4 15L15.6 12.8L16.8 15H14.4zM7.2 15L8.4 12.8L9.6 15H7.2z"/>
+                                </svg>
+                                <span class="text-lg font-bold text-gray-800">ChatGPT 바로가기</span>
+                            </a>
+                        </div>
+                        <!-- END NEW: Link Block for AI tools -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 5: Method 2 (그림으로 수익화) -->
+            <section>
+                <h2 class="text-4xl font-bold mb-8 text-left"><span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full mr-2">방법 2</span> 그림으로 수익화</h2>
+                <div class="grid grid-cols-2 gap-10 items-center">
+                    <div>
+                        <ul class="text-2xl space-y-8 list-none ml-0">
+                            <li class="fragment">✅ <b>굿즈(상품) 디자인</b><br><span class="text-gray-500 text-xl">꽃, 풍경 그림으로 엽서/컵 제작</span></li>
+                            <li class="fragment">✅ <b>이모티콘 도전</b><br><span class="text-gray-500 text-xl">손주에게 보낼 따뜻한 인사말 이미지</span></li>
+                            <li class="fragment">✅ <b>유튜브 썸네일</b><br><span class="text-gray-500 text-xl">내 채널 대문 이미지 만들기</span></li>
+                        </ul>
+                    </div>
+                    <!-- Right: AI Prompt Example & Links -->
+                    <div class="flex flex-col gap-6">
+                        <div class="bg-gray-800 text-white p-8 rounded-xl text-xl font-mono shadow-2xl h-full flex flex-col justify-center">
+                            <p class="text-green-400 font-bold mb-4">// AI에게 이렇게 지시하세요.</p>
+                            <p class="leading-relaxed">"수채화 스타일로 활짝 핀 해바라기 밭을 그려줘. 따뜻하고 희망찬 느낌으로. 8K 고화질."</p>
+                        </div>
+
+                        <!-- NEW: Link Block for AI tools (Duplicated from Slide 4) -->
+                        <div class="mt-4 flex justify-center space-x-8">
+                            <a href="https://gemini.google.com/app" target="_blank" class="flex items-center space-x-2 p-3 bg-white rounded-xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6">
+                                    <path d="M12 2L16.5 6.5L12 11L7.5 6.5L12 2Z" fill="#F9AB00"/>
+                                    <path d="M12 13L16.5 17.5L12 22L7.5 17.5L12 13Z" fill="#4285F4"/>
+                                    <path d="M7.5 6.5L12 11L7.5 15.5L3 11L7.5 6.5Z" fill="#34A853"/>
+                                    <path d="M16.5 6.5L21 11L16.5 15.5L12 11L16.5 6.5Z" fill="#EA4335"/>
+                                </svg>
+                                <span class="text-lg font-bold text-gray-800">Gemini 바로가기</span>
+                            </a>
+                            <a href="https://chatgpt.com/" target="_blank" class="flex items-center space-x-2 p-3 bg-white rounded-xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#10A37F" class="w-6 h-6">
+                                    <path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-0.9 2-2V4C22 2.9 21.1 2 20 2zM10.8 15L12 12.8L13.2 15H10.8zM14.4 15L15.6 12.8L16.8 15H14.4zM7.2 15L8.4 12.8L9.6 15H7.2z"/>
+                                </svg>
+                                <span class="text-lg font-bold text-gray-800">ChatGPT 바로가기</span>
+                            </a>
+                        </div>
+                        <!-- END NEW: Link Block for AI tools -->
+                    </div>
+                </div>
+            </section>
+
+  <!-- Slide 6: Method 3 (음악으로 수익화) -->
+            <section>
+                <h2 class="text-4xl font-bold mb-8 text-left"><span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full mr-2">방법 3</span> 음악으로 수익화</h2>
+                <div class="grid grid-cols-2 gap-10 items-center">
+                    <div>
+                        <ul class="text-2xl space-y-8 list-none ml-0">
+                            <li class="fragment">✅ <b>BGM/로고송 제작
+</b><br><span class="text-gray-500 text-xl">유튜브, 영상용 배경음악 (Suno AI 활용)</span></li>
+                            <li class="fragment">✅ <b>맞춤형 축하 노래
+</b><br><span class="text-gray-500 text-xl">손주 생일, 부모님 칠순 기념 나만의 노래</span></li>
+                            <li class="fragment">✅ <b>명상/수면 음악</b><br><span class="text-gray-500 text-xl">불면증 해소를 위한 빗소리, 피아노 연주곡</span></li>
+                        </ul>
+                    </div>
+                    <!-- Right: AI Prompt Example & Links -->
+                    <div class="flex flex-col gap-6">
+                        <div class="bg-gray-800 text-white p-8 rounded-xl text-xl font-mono shadow-2xl h-full flex flex-col justify-center">
+                            <p class="text-green-400 font-bold mb-4">// AI에게 이렇게 지시하세요.</p>
+                            <p class="leading-relaxed">"손녀의 7살 생일을 축하하는 밝고 경쾌한 동요 스타일의 노래 가사를 써주고, 작곡 AI에 넣을 프롬프트를 영어로 작성해줘."</p>
+                        </div>
+
+                        <!-- NEW: Link Block for AI tools (Duplicated from Slide 4) -->
+                        <div class="mt-4 flex justify-center space-x-8">
+                            <a href="https://gemini.google.com/app" target="_blank" class="flex items-center space-x-2 p-3 bg-white rounded-xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6">
+                                    <path d="M12 2L16.5 6.5L12 11L7.5 6.5L12 2Z" fill="#F9AB00"/>
+                                    <path d="M12 13L16.5 17.5L12 22L7.5 17.5L12 13Z" fill="#4285F4"/>
+                                    <path d="M7.5 6.5L12 11L7.5 15.5L3 11L7.5 6.5Z" fill="#34A853"/>
+                                    <path d="M16.5 6.5L21 11L16.5 15.5L12 11L16.5 6.5Z" fill="#EA4335"/>
+                                </svg>
+                                <span class="text-lg font-bold text-gray-800">Gemini 바로가기</span>
+                            </a>
+                            <a href="https://suno.com/" target="_blank" class="flex items-center space-x-2 p-3 bg-white rounded-xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#10A37F" class="w-6 h-6">
+                                    <path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-0.9 2-2V4C22 2.9 21.1 2 20 2zM10.8 15L12 12.8L13.2 15H10.8zM14.4 15L15.6 12.8L16.8 15H14.4zM7.2 15L8.4 12.8L9.6 15H7.2z"/>
+                                </svg>
+                                <span class="text-lg font-bold text-gray-800">Suno Ai 바로가기</span>
+                            </a>
+                        </div>
+                        <!-- END NEW: Link Block for AI tools -->
+                    </div>
+                </div>
+            </section>
+
+<!-- Slide 7: Method 3 (AI 영상으로 수익화) -->
+            <section>
+                <h2 class="text-4xl font-bold mb-8 text-left"><span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full mr-2">방법 4</span> AI 영상으로 수익화</h2>
+                <div class="grid grid-cols-2 gap-10 items-center">
+                    <div>
+                        <ul class="text-2xl space-y-8 list-none ml-0">
+                            <li class="fragment">✅ <b>숏폼 크리에이터
+</b><br><span class="text-gray-500 text-xl">유튜브 쇼츠, 릴스에 명언/건강 정보 영상 업로드</span></li>
+                            <li class="fragment">✅ <b>영상 연하장/초대장
+</b><br><span class="text-gray-500 text-xl">새해, 명절, 생일에 보내는 맞춤형 동영상 카드</span></li>
+                            <li class="fragment">✅ <b>추억의 사진 심폐소생술</b><br><span class="text-gray-500 text-xl">오래된 부모님 사진을 움직이는 영상으로 변환</span></li>
+                        </ul>
+                    </div>
+                    <!-- Right: AI Prompt Example & Links -->
+                    <div class="flex flex-col gap-6">
+                        <div class="bg-gray-800 text-white p-8 rounded-xl text-xl font-mono shadow-2xl h-full flex flex-col justify-center">
+                            <p class="text-green-400 font-bold mb-4">// AI에게 이렇게 지시하세요.</p>
+                            <p class="leading-relaxed">"가을 숲 속 힐링 영상을 만들고 싶어. 낙엽이 천천히 떨어지고 햇살이 비치는 숲길을 묘사하는 AI 영상 생성용 프롬프트를 짜줘."</p>
+                        </div>
+
+                        <!-- NEW: Link Block for AI tools (Duplicated from Slide 4) -->
+                        <div class="mt-4 flex justify-center space-x-8">
+                            <a href="https://gemini.google.com/app" target="_blank" class="flex items-center space-x-2 p-3 bg-white rounded-xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6">
+                                    <path d="M12 2L16.5 6.5L12 11L7.5 6.5L12 2Z" fill="#F9AB00"/>
+                                    <path d="M12 13L16.5 17.5L12 22L7.5 17.5L12 13Z" fill="#4285F4"/>
+                                    <path d="M7.5 6.5L12 11L7.5 15.5L3 11L7.5 6.5Z" fill="#34A853"/>
+                                    <path d="M16.5 6.5L21 11L16.5 15.5L12 11L16.5 6.5Z" fill="#EA4335"/>
+                                </svg>
+                                <span class="text-lg font-bold text-gray-800">Gemini 바로가기</span>
+                            </a>
+                            <a href="https://chatgpt.com/" target="_blank" class="flex items-center space-x-2 p-3 bg-white rounded-xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#10A37F" class="w-6 h-6">
+                                    <path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-0.9 2-2V4C22 2.9 21.1 2 20 2zM10.8 15L12 12.8L13.2 15H10.8zM14.4 15L15.6 12.8L16.8 15H14.4zM7.2 15L8.4 12.8L9.6 15H7.2z"/>
+                                </svg>
+                                <span class="text-lg font-bold text-gray-800">ChatGPT 바로가기</span>
+                            </a>
+                        </div>
+                        <!-- END NEW: Link Block for AI tools -->
+                    </div>
+                </div>
+            </section>
+
+
+
+            <!-- Slide 8: The Key Message (핵심은 경험) -->
+            <section data-background-color="#2563EB">
+                <h2 class="text-white text-5xl font-black mb-10 text-center">핵심은 '경험'입니다</h2>
+                <div class="bg-white p-10 rounded-xl shadow-2xl transform scale-105">
+                    <div class="text-4xl font-black text-gray-800 leading-snug text-center">
+                        AI는 <span class="text-red-600">기술</span>을 가지고 있지만,<br>
+                        여러분은 <span class="text-blue-600">지혜와 스토리</span>를 가지고 있습니다.<br>
+                        <br>
+                        <span class="text-5xl block mt-4 text-accent">AI + 여러분의 경험 = 대체 불가능한 가치</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 9: Action Plan & Outro (오늘 바로 시작할 3가지) -->
+            <section>
+                <h2 class="text-4xl font-bold mb-8 text-center">오늘 바로 시작할 3가지 행동</h2>
+                <div class="flex flex-col gap-6 text-left w-2/3 mx-auto">
+                    <div class="flex items-center p-5 bg-gray-50 rounded-lg shadow fragment fade-in">
+                        <span class="text-4xl mr-5 font-black text-accent">1️⃣</span>
+                        <span class="text-2xl font-medium">무료 AI (구글 Gemini, ChatGPT 등) <span class="font-bold">가입하기</span></span>
+                    </div>
+                    <div class="flex items-center p-5 bg-gray-50 rounded-lg shadow fragment fade-in">
+                        <span class="text-4xl mr-5 font-black text-accent">2️⃣</span>
+                        <span class="text-2xl font-medium">"안녕, 반갑다"라고 <span class="font-bold">말 걸어보기</span></span>
+                    </div>
+                    <div class="flex items-center p-5 bg-gray-50 rounded-lg shadow fragment fade-in">
+                        <span class="text-4xl mr-5 font-black text-accent">3️⃣</span>
+                        <span class="text-2xl font-medium">내 취미에 대해 <span class="font-bold">질문 하나 던져보기</span></span>
+                    </div>
+ 		<div class="mt-12 text-center fragment fade-in">
+                    <h3 class="text-4xl font-black text-accent">지금이 가장 빠른 때입니다.</h3> <p class="text-gray-600 mt-4 text-xl">경청해 주셔서 감사합니다.</p>
+
+
+                </div>
+                                                       
+                                    </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js Scripts and Cleaned Logic -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script>
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            center: true,
+            // 보안 오류 방지를 위해 hash와 history를 false로 설정
+            hash: false,
+            history: false,
+            width: 1280, 
+            height: 720,
+            margin: 0.1,
+            minScale: 0.2,
+            maxScale: 1.5,
+            transition: 'slide', 
+            autoPlayMedia: true,
+        });
+
+        // ==========================================================
+    
+        // =========================================================
+        
+    </script>
+</body>
+</html>
