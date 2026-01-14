@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>스펙트럼 스튜디오 Pro - 고화질 렌더링 에디션</title>
+    <title>필요한 스펙트럼 스튜디오 Pro - 고화질 렌더링 에디션</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
@@ -327,7 +327,6 @@
                         <p style="color:#555; text-align:center; font-size:0.8em;">목록이 비어 있습니다.</p>
                     </div>
 
-                    <!-- 오디오 품질 선택 -->
                     <div class="prop-group" style="margin-top:20px;">
                         <label class="prop-label">오디오 내보내기 품질 (Bitrate)</label>
                         <select id="audioBitrateSelect">
@@ -440,11 +439,11 @@
                 ctx.save(); ctx.translate(this.x, this.y); if(this.type !== 'rain') ctx.rotate(this.angle); ctx.globalAlpha = this.opacity;
                 const s = this.size; const baseColor = this.config.particleColor;
                 switch(this.type) {
-                    case 'sakura': ctx.fillStyle = baseColor; ctx.beginPath(); ctx.ellipse(0, 0, s, s * 0.6, 0, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = "rgba(0,0,0,0.1)"; ctx.beginPath(); ctx.moveTo(-s, 0); ctx.lineTo(s, 0); ctx.stroke(); break;
+                    case 'sakura': ctx.fillStyle = baseColor; ctx.beginPath(); ctx.ellipse(0, 0, s, s * 0.6, 0, 0, Math.PI * 2); ctx.fill(); break;
                     case 'snow': const snowGrad = ctx.createRadialGradient(0,0,0, 0,0,s); snowGrad.addColorStop(0, "white"); snowGrad.addColorStop(1, "rgba(255,255,255,0)"); ctx.fillStyle = snowGrad; ctx.beginPath(); ctx.arc(0, 0, s, 0, Math.PI * 2); ctx.fill(); break;
                     case 'fire': ctx.fillStyle = baseColor; ctx.shadowBlur = 15; ctx.shadowColor = baseColor; ctx.beginPath(); ctx.arc(0, 0, s, 0, Math.PI * 2); ctx.fill(); break;
                     case 'sparkle': ctx.fillStyle = baseColor; ctx.shadowBlur = 10; ctx.shadowColor = baseColor; for(let i=0; i<2; i++) { ctx.rotate(Math.PI / 2); ctx.fillRect(-s*2.5, -s/4, s*5, s/2); } ctx.beginPath(); ctx.arc(0,0,s/1.5,0,Math.PI*2); ctx.fill(); break;
-                    case 'bubble': ctx.strokeStyle = baseColor; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(0,0,s,0,Math.PI*2); ctx.stroke(); ctx.fillStyle = "rgba(255,255,255,0.3)"; ctx.beginPath(); ctx.arc(-s/3, -s/3, s/4, 0, Math.PI * 2); ctx.fill(); break;
+                    case 'bubble': ctx.strokeStyle = baseColor; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(0,0,s,0,Math.PI*2); ctx.stroke(); break;
                     case 'rain': ctx.strokeStyle = baseColor; ctx.lineWidth = Math.max(1, s / 2); ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(0, -s * 8); ctx.lineTo(0, s * 8); ctx.stroke(); break;
                     case 'heart': ctx.fillStyle = baseColor; ctx.beginPath(); ctx.moveTo(0, s/2); ctx.bezierCurveTo(-s, -s/2, -s*1.5, s/2, 0, s*1.5); ctx.bezierCurveTo(s*1.5, s/2, s, -s/2, 0, s/2); ctx.fill(); break;
                     case 'star': ctx.fillStyle = baseColor; ctx.beginPath(); for(let i=0; i<5; i++) { ctx.lineTo(Math.cos((18+i*72)/180*Math.PI)*s, -Math.sin((18+i*72)/180*Math.PI)*s); ctx.lineTo(Math.cos((54+i*72)/180*Math.PI)*s/2, -Math.sin((54+i*72)/180*Math.PI)*s/2); } ctx.closePath(); ctx.fill(); break;
@@ -618,46 +617,46 @@
              * 브라우저 캐시에서 리소스를 가져오거나 다운로드하여 Blob URL로 반환
              */
             async getCachedLibrary(url, mimeType) {
-                const cacheName = 'ffmpeg-library-cache-stable';
+                const cacheName = 'ffmpeg-library-cache-stable-v4';
                 try {
                     const cache = await caches.open(cacheName);
                     let response = await cache.match(url);
                     if (!response || !response.ok) {
-                        console.log(`Downloading library to cache: ${url}`);
                         response = await fetch(url);
                         if (!response.ok) throw new Error('Network response failed');
                         await cache.put(url, response.clone());
-                    } else {
-                        console.log(`Loading library from cache: ${url}`);
                     }
                     const blob = await response.blob();
-                    // unpkg의 ESM 워커 접근 문제를 해결하기 위해 toBlobURL을 사용하여 Blob으로 감싸서 리턴
                     return await toBlobURL(blob, mimeType);
                 } catch (e) {
-                    console.warn("Caching failed, loading directly via toBlobURL:", e);
                     return await toBlobURL(url, mimeType);
                 }
             },
 
             /**
-             * [수정] 참고 코드의 안정적인 toBlobURL 패턴 적용
+             * [수정] 참고 코드의 해결책 1 적용: 핵심 파일들을 모두 toBlobURL로 감싸 보안 오류 해결
              */
-            async initFFmpeg(onProgress) {
+            async initFFmpeg() {
                 if (this.isFFmpegLoaded) return;
                 
-                // ES 모듈 주소 설정
-                const coreVersion = '0.12.6';
-                const baseURL = `https://unpkg.com/@ffmpeg/core@${coreVersion}/dist/esm`;
-                
-                if (onProgress) this.ffmpeg.on('progress', onProgress);
-                this.ffmpeg.on('log', ({ message }) => console.log(message));
+                const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm';
+                const ffmpegURL = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm';
 
-                // [해결 핵심] 모든 주요 파일을 toBlobURL로 감싸서 Worker Origin 문제를 우회
+                this.ffmpeg.on('log', ({ message }) => console.log(message));
+                this.ffmpeg.on('progress', ({ progress }) => {
+                    if (this.isEncoding) {
+                         const percent = Math.round(progress * 100);
+                         document.getElementById('renderStatus').innerText = `최종 MP4 변환 중... ${percent}%`;
+                         document.getElementById('renderProgress').style.width = percent + '%';
+                    }
+                });
+
+                // 해결책 1 적용: core, wasm, worker를 모두 toBlobURL로 감싸서 Worker Origin 문제 해결
                 await this.ffmpeg.load({
                     coreURL: await this.getCachedLibrary(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
                     wasmURL: await this.getCachedLibrary(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
-                    // 0.12 버전에서는 workerURL 대신 classWorkerURL이나 내부 dynamic import가 사용되나
-                    // origin null 오류 해결을 위해 core와 wasm을 blob으로 만드는 것이 가장 핵심입니다.
+                    // ESM 버전에서는 내부적으로 worker.js를 호출하므로, classWorkerURL로 명시적 변환 로드
+                    classWorkerURL: await this.getCachedLibrary(`${ffmpegURL}/worker.js`, 'text/javascript')
                 });
 
                 this.isFFmpegLoaded = true;
@@ -675,22 +674,13 @@
                 
                 modal.style.display = 'flex';
                 try {
-                    statusText.innerText = "FFmpeg 안정 로딩 중 (Worker 보안 우회 적용)...";
-                    
-                    // FFmpeg 초기화
-                    await this.initFFmpeg(({ progress }) => {
-                        if (this.isEncoding) {
-                             const percent = Math.round(progress * 100);
-                             statusText.innerText = `최종 MP4 변환 중... ${percent}%`;
-                             progressFill.style.width = percent + '%';
-                        }
-                    });
+                    statusText.innerText = "FFmpeg 초기화 중 (Worker 보안 우회 적용)...";
+                    await this.initFFmpeg();
 
                     const currentTrack = this.state.playlist[this.state.currentIndex];
-                    if (!currentTrack) throw new Error("재생목록에 곡이 없습니다.");
+                    if (!currentTrack) throw new Error("곡을 선택해 주세요.");
                     
-                    statusText.innerText = "오디오 분석 및 프레임 캡처 중...";
-                    
+                    statusText.innerText = "오디오 샘플 분석 중...";
                     const audioResponse = await fetch(currentTrack.url);
                     const audioBuffer = await audioResponse.arrayBuffer();
                     
@@ -700,8 +690,8 @@
                     const fCtx = frameCanvas.getContext('2d');
                     
                     this.isEncoding = false;
+                    statusText.innerText = `프레임 고화질 렌더링 중 (${fps} FPS)...`;
 
-                    // 1. 오프라인 프레임 캡처 루프
                     for (let i = 0; i < totalFrames; i++) {
                         this.draw(fCtx); 
                         const frameData = frameCanvas.toDataURL('image/jpeg', 0.9).split(',')[1];
@@ -711,14 +701,13 @@
                         progressFill.style.width = percent + '%';
                         detailText.innerText = `${i} / ${totalFrames} Frames (${Math.round(percent)}%)`;
                         
-                        if(i % 30 === 0) await new Promise(r => setTimeout(r, 1));
+                        if(i % (fps === 60 ? 30 : 15) === 0) await new Promise(r => setTimeout(r, 1));
                     }
 
                     await this.ffmpeg.writeFile('audio.mp3', await fetchFile(new Blob([audioBuffer])));
 
-                    // 2. 최종 MP4 인코딩
                     this.isEncoding = true;
-                    statusText.innerText = "최종 인코딩 작업을 수행하고 있습니다...";
+                    statusText.innerText = "MP4 고화질 변환 중 (Libx264 엔진)...";
                     
                     await this.ffmpeg.exec([
                         '-framerate', String(fps),
@@ -743,9 +732,9 @@
                     URL.revokeObjectURL(url);
 
                     modal.style.display = 'none'; 
-                    alert("성공적으로 제작이 완료되었습니다! 라이브러리는 브라우저에 캐싱되었습니다.");
+                    alert("성공적으로 영상 제작이 완료되었습니다!");
                 } catch(e) { 
-                    console.error("Export Error:", e); 
+                    console.error("Master Export Error:", e); 
                     alert("렌더링 실패: " + e.message); 
                     modal.style.display = 'none'; 
                 }
