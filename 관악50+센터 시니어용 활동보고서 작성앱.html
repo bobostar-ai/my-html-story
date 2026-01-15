@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>활동일지 작성도구</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f0f2f5;
+            font-size: 20px;
+        }
+        .block-item {
+            transition: all 0.2s;
+        }
+        ::placeholder {
+            color: #cbd5e0;
+            opacity: 1;
+        }
+        /* 시니어를 위한 큰 입력창 스타일 */
+        .form-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-bottom: 24px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #e2e8f0; 
+        }
+        .form-input-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .form-label {
+            font-weight: bold;
+            color: #4a5568;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 3px solid #edf2f7;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            outline: none;
+            transition: all 0.2s;
+            background-color: #f8fafc;
+        }
+        .form-control:focus {
+            border-color: #4299e1;
+            background-color: #ffffff;
+        }
+        .btn-large {
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden">
+        <!-- 상단 헤더 -->
+        <header class="bg-blue-600 p-6 text-white flex justify-between items-center">
+            <div class="text-left">
+                <h1 class="text-3xl font-bold">활동일지</h1>
+                <div class="flex flex-col">
+                    <p class="mt-1 text-blue-100">칸을 채우고 사진을 추가하여 일지를 완성하세요!</p>
+                    <span class="text-xs text-blue-200 mt-1 opacity-80 font-bold">Made by PYH 서현(필요한)</span>
+                </div>
+            </div>
+            <!-- 불러오기 버튼 -->
+            <button onclick="document.getElementById('importFile').click()" class="bg-white text-blue-600 px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-blue-50 transition-colors flex items-center gap-2">
+                📂 파일 불러오기
+            </button>
+            <input type="file" id="importFile" class="hidden" accept=".html" onchange="importHTML(this)">
+        </header>
+
+        <div class="p-6 md:p-10 space-y-8">
+            
+            <!-- 1단계: 글제목 입력 -->
+            <section class="border-b-4 border-gray-100 pb-8">
+                <label class="block text-2xl font-bold mb-3 text-gray-800">1. 글제목</label>
+                <input type="text" id="postTitle" placeholder="예) 00월 00일 활동 기록, 즐거운 커뮤니티 일지" 
+                    class="w-full p-4 border-4 border-gray-200 rounded-xl focus:border-blue-500 outline-none text-2xl bg-slate-50">
+            </section>
+
+            <!-- 2단계: 활동 내용 입력 -->
+            <section class="p-6 rounded-2xl" style="background-color: #d9dfe7;">
+                <h2 class="text-2xl font-bold mb-8 text-slate-800 text-left">2. 활동 내용 입력 (표 형식)</h2>
+                
+                <div id="formContainer">
+                    <div class="form-input-group text-left border-slate-300">
+                        <label class="form-label">📝 활동명(행사명)</label>
+                        <input type="text" data-key="name" class="form-control form-field" placeholder="ex) 회원 정기모임, 전문가 초청 강연">
+                    </div>
+                    
+                    <!-- 일시 선택 메뉴 -->
+                    <div class="form-input-group text-left border-slate-300">
+                        <label class="form-label">📅 일시 선택</label>
+                        <div class="space-y-3">
+                            <input type="date" id="inputDateDay" class="form-control form-date-field" title="날짜 선택">
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="flex flex-col gap-2 p-3 bg-white rounded-xl border border-slate-200">
+                                    <span class="text-sm font-bold text-blue-600">시작 시간</span>
+                                    <div class="flex items-center gap-2">
+                                        <select id="startAmpm" class="form-control form-date-field py-2" title="오전/오후">
+                                            <option value="오전">오전</option>
+                                            <option value="오후">오후</option>
+                                        </select>
+                                        <select id="startHour" class="form-control form-date-field py-2" title="시작 시"></select>
+                                        <span class="font-bold">:</span>
+                                        <select id="startMin" class="form-control form-date-field py-2" title="시작 분"></select>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-2 p-3 bg-white rounded-xl border border-slate-200">
+                                    <span class="text-sm font-bold text-orange-600">종료 시간</span>
+                                    <div class="flex items-center gap-2">
+                                        <select id="endAmpm" class="form-control form-date-field py-2" title="오전/오후">
+                                            <option value="오전">오전</option>
+                                            <option value="오후">오후</option>
+                                        </select>
+                                        <select id="endHour" class="form-control form-date-field py-2" title="종료 시"></select>
+                                        <span class="font-bold">:</span>
+                                        <select id="endMin" class="form-control form-date-field py-2" title="종료 분"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-600 mt-1">🕒 오전/오후와 10분 단위의 시간을 선택해 주세요.</p>
+                    </div>
+
+                    <div class="form-input-group text-left border-slate-300">
+                        <label class="form-label">📍 장소 선택</label>
+                        <div class="space-y-3">
+                            <select id="selectLocation" class="form-control form-location-field" title="장소 목록 선택">
+                                <option value="">-- 자주 쓰는 장소 선택 --</option>
+                                <option value="커뮤니티룸 1">커뮤니티룸 1</option>
+                                <option value="커뮤니티룸 2">커뮤니티룸 2</option>
+                                <option value="배움터 1">배움터 1</option>
+                                <option value="배움터 2">배움터 2</option>
+                                <option value="디지털 이음">디지털 이음</option>
+                                <option value="아트룸">아트룸</option>
+                                <option value="더키친">더키친</option>
+                                <option value="마루홀">마루홀</option>
+                                <option value="직접입력">직접 입력하기</option>
+                            </select>
+                            <input type="text" id="inputLocationText" class="form-control form-location-field" 
+                                placeholder="기타 장소를 직접 입력하세요">
+                        </div>
+                        <p class="text-sm text-slate-600 mt-1">💡 목록에서 선택 시 앞에 '관악50플러스센터 2층'이 자동으로 붙습니다.</p>
+                    </div>
+
+                    <!-- 참가자 -->
+                    <div class="form-input-group text-left border-slate-300">
+                        <label class="form-label">👥 참가자</label>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200">
+                                <span class="font-bold text-slate-700 whitespace-nowrap">대표자 외</span>
+                                <select id="memberCount" class="form-control py-2 w-32 border-blue-200" title="추가 인원 선택">
+                                </select>
+                                <span class="font-bold text-slate-700 whitespace-nowrap">명</span>
+                            </div>
+                            <input type="text" id="participantNames" class="form-control" placeholder="참가자 이름을 쉼표(,)로 구분해서 적어주세요 (예: 홍길동, 김철수)">
+                        </div>
+                    </div>
+
+                    <div class="form-input-group text-left border-slate-300">
+                        <label class="form-label">📢 주요내용</label>
+                        <textarea data-key="content" class="form-control form-field h-32" placeholder="무슨 활동을 하셨나요?"></textarea>
+                    </div>
+                    <div class="form-input-group text-left border-slate-300">
+                        <label class="form-label">💡 평가 및 향후 계획</label>
+                        <textarea data-key="plan" class="form-control form-field h-32" placeholder="활동 평가 및 계획을 적어주세요."></textarea>
+                    </div>
+
+                    <!-- 다음 활동 일시 -->
+                    <div class="form-input-group text-left border-slate-300">
+                        <label class="form-label">🗓️ 다음 활동 일시</label>
+                        <div class="space-y-3">
+                            <input type="date" id="nextDateDay" class="form-control form-date-field" title="다음 활동 날짜 선택">
+                            <div class="flex flex-col gap-2 p-3 bg-white rounded-xl border border-slate-200">
+                                <span class="text-sm font-bold text-blue-600">시간 선택</span>
+                                <div class="flex items-center gap-2">
+                                    <select id="nextDateAmpm" class="form-control form-date-field py-2" title="오전/오후">
+                                        <option value="오전">오전</option>
+                                        <option value="오후">오후</option>
+                                    </select>
+                                    <select id="nextDateHour" class="form-control form-date-field py-2" title="시"></select>
+                                    <span class="font-bold">:</span>
+                                    <select id="nextDateMin" class="form-control form-date-field py-2" title="분"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-600 mt-1">🕒 다음 활동 예정 날짜와 시간을 선택해 주세요.</p>
+                    </div>
+
+                    <div class="form-input-group text-left border-slate-300">
+                        <label class="form-label">🙋 다음 활동 참여 예정자</label>
+                        <input type="text" data-key="nextParticipants" class="form-control form-field" placeholder="예) 홍길동, 김철수 외 3명">
+                    </div>
+
+                    <div class="form-input-group text-left border-slate-300">
+                        <label class="form-label">➕ 기타</label>
+                        <textarea data-key="etc" class="form-control form-field h-24" placeholder="추가로 적고 싶은 내용을 적어주세요."></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 추가 블록 -->
+            <section class="text-left">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">3. 사진 및 추가 글 추가</h2>
+                <div id="extraBlocks" class="space-y-4 mb-6 text-left"></div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="addTextBlock()" class="btn-large bg-green-500 hover:bg-green-600 text-white shadow-lg">📝 글 추가</button>
+                    <button onclick="document.getElementById('imageInput').click()" class="btn-large bg-orange-500 hover:bg-orange-600 text-white shadow-lg">📸 사진 추가</button>
+                    <input type="file" id="imageInput" class="hidden" accept="image/*" onchange="addImageBlock(this)">
+                </div>
+            </section>
+
+            <hr class="border-2 border-gray-100">
+
+            <!-- 미리보기 및 저장 -->
+            <section>
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                    <h2 class="text-2xl font-bold text-gray-800">4. 미리보기 및 저장</h2>
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <button onclick="copyHTML()" class="flex-1 md:flex-none btn-large bg-blue-600 hover:bg-blue-700 text-white shadow-xl">📋 코드 복사</button>
+                        <button onclick="downloadHTML()" class="flex-1 md:flex-none btn-large bg-purple-600 hover:bg-purple-700 text-white shadow-xl">💾 파일 저장</button>
+                    </div>
+                </div>
+                <div id="previewArea" class="border-4 border-dashed border-gray-300 rounded-2xl p-6 bg-gray-50 min-h-[400px]">
+                    <div id="renderedPost"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-black text-white px-8 py-4 rounded-full text-xl opacity-0 transition-opacity pointer-events-none shadow-2xl z-50">알림 메시지</div>
+
+    <script>
+        let extraBlocks = [];
+
+        function initSelects() {
+            const hSelects = ['startHour', 'endHour', 'nextDateHour'];
+            hSelects.forEach(id => {
+                const el = document.getElementById(id);
+                el.innerHTML = '';
+                for(let i=1; i<=12; i++) {
+                    const h = i.toString().padStart(2, '0');
+                    el.innerHTML += `<option value="${h}">${h}시</option>`;
+                }
+            });
+            const mSelects = ['startMin', 'endMin', 'nextDateMin'];
+            mSelects.forEach(id => {
+                const el = document.getElementById(id);
+                el.innerHTML = '';
+                for(let i=0; i<60; i+=10) {
+                    const m = i.toString().padStart(2, '0');
+                    el.innerHTML += `<option value="${m}">${m}분</option>`;
+                }
+            });
+            const mCount = document.getElementById('memberCount');
+            mCount.innerHTML = '';
+            for(let i=0; i<=20; i++) {
+                mCount.innerHTML += `<option value="${i}">${i}</option>`;
+            }
+        }
+
+        initSelects();
+
+        document.querySelectorAll('.form-field, .form-date-field, .form-location-field, select, #participantNames').forEach(field => {
+            field.addEventListener('input', updatePreview);
+        });
+        document.getElementById('postTitle').addEventListener('input', updatePreview);
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.style.opacity = '1';
+            setTimeout(() => toast.style.opacity = '0', 2000);
+        }
+
+        function addTextBlock() {
+            extraBlocks.push({ id: Date.now(), type: 'text', content: '' });
+            renderExtraEditor();
+        }
+
+        function addImageBlock(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    extraBlocks.push({ id: Date.now(), type: 'image', content: e.target.result });
+                    renderExtraEditor();
+                    input.value = "";
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function deleteBlock(id) {
+            extraBlocks = extraBlocks.filter(b => b.id !== id);
+            renderExtraEditor();
+        }
+
+        function updateExtraText(id, value) {
+            const block = extraBlocks.find(b => b.id === id);
+            if (block) block.content = value;
+            updatePreview();
+        }
+
+        function renderExtraEditor() {
+            const container = document.getElementById('extraBlocks');
+            container.innerHTML = '';
+            extraBlocks.forEach((block, index) => {
+                const div = document.createElement('div');
+                div.className = 'bg-white p-4 border-2 border-gray-100 rounded-xl relative text-left shadow-sm mb-4';
+                let content = block.type === 'text' ? 
+                    `<textarea oninput="updateExtraText(${block.id}, this.value)" class="w-full p-3 border rounded h-32 text-xl bg-slate-50 outline-none focus:bg-white focus:border-blue-400 transition-all" placeholder="내용 입력">${block.content}</textarea>` :
+                    `<img src="${block.content}" class="max-h-64 rounded shadow-md mx-auto">`;
+                
+                div.innerHTML = `<div class="flex justify-between mb-2"><span class="font-bold text-gray-400">추가 ${index+1}</span><button onclick="deleteBlock(${block.id})" class="text-red-500 font-bold">삭제 X</button></div>${content}`;
+                container.appendChild(div);
+            });
+            updatePreview();
+        }
+
+        function formatKoreanDateWithDay(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            const week = ['일', '월', '화', '수', '목', '금', '토'];
+            const parts = dateStr.split('-');
+            const dayOfWeek = week[date.getDay()];
+            return `${parts[0]}년 ${parts[1]}월 ${parts[2]}일 (${dayOfWeek})`;
+        }
+
+        // 불렛 기호 자동 추가 함수
+        function addBullets(text) {
+            if (!text) return '';
+            return text.split('\n').map(line => {
+                const trimmed = line.trim();
+                // 내용이 있고 이미 기호로 시작하지 않는 경우에만 추가
+                if (trimmed.length > 0 && !trimmed.startsWith('▶')) {
+                    return '▶ ' + line;
+                }
+                return line;
+            }).join('\n');
+        }
+
+        function updatePreview() {
+            const title = document.getElementById('postTitle').value;
+            const fields = {};
+            document.querySelectorAll('.form-field').forEach(f => fields[f.dataset.key] = f.value);
+
+            const day = document.getElementById('inputDateDay').value;
+            const sAmpm = document.getElementById('startAmpm').value;
+            const sH = document.getElementById('startHour').value;
+            const sM = document.getElementById('startMin').value;
+            const eAmpm = document.getElementById('endAmpm').value;
+            const eH = document.getElementById('endHour').value;
+            const eM = document.getElementById('endMin').value;
+            let dateText = day ? formatKoreanDateWithDay(day) + ` ${sAmpm} ${sH}:${sM} ~ ${eAmpm} ${eH}:${eM}` : '';
+
+            const nDay = document.getElementById('nextDateDay').value;
+            const nAmpm = document.getElementById('nextDateAmpm').value;
+            const nH = document.getElementById('nextDateHour').value;
+            const nM = document.getElementById('nextDateMin').value;
+            let nextDateText = nDay ? formatKoreanDateWithDay(nDay) + ` ${nAmpm} ${nH}:${nM}` : '';
+
+            const selLoc = document.getElementById('selectLocation').value;
+            const textLoc = document.getElementById('inputLocationText').value;
+            let finalLoc = "";
+            if (selLoc && selLoc !== "직접입력") {
+                finalLoc = "관악50플러스센터 2층 " + selLoc;
+                if (textLoc) finalLoc += " (" + textLoc + ")";
+            } else {
+                finalLoc = textLoc;
+            }
+
+            const count = document.getElementById('memberCount').value;
+            const names = document.getElementById('participantNames').value;
+            let memberText = `대표자 외 ${count}명`;
+            if (names) memberText += `<br><span style="font-size: 0.9em; color: #64748b;">(명단: ${names})</span>`;
+
+            // 자동 불렛 적용
+            const formattedContent = addBullets(fields.content);
+            const formattedPlan = addBullets(fields.plan);
+
+            let html = `
+                <div style="max-width: 800px; margin: 0; font-family: 'Malgun Gothic', sans-serif; color: #333; line-height: 1.6; text-align: left; background-color: rgba(59, 130, 246, 0.06); padding: 30px; border-radius: 15px;">
+                    <h1 style="text-align: left; font-size: 28px; color: #2563eb; margin-bottom: 30px; border-bottom: 2px solid #2563eb; padding-bottom: 10px; margin-top: 0;">활동일지</h1>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 16px; text-align: left; background-color: white;">
+                        <tr><th style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px; width: 35%;">활동명(행사명)</th><td style="border: 1px solid #cbd5e1; padding: 12px;">${fields.name || ''}</td></tr>
+                        <tr><th style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px;">일시</th><td style="border: 1px solid #cbd5e1; padding: 12px;">${dateText}</td></tr>
+                        <tr><th style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px;">장소</th><td style="border: 1px solid #cbd5e1; padding: 12px;">${finalLoc}</td></tr>
+                        <tr><th style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px;">참가자</th><td style="border: 1px solid #cbd5e1; padding: 12px;">${memberText}</td></tr>
+                        <tr><th style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px;">주요내용</th><td style="border: 1px solid #cbd5e1; padding: 12px; white-space: pre-wrap;">${formattedContent}</td></tr>
+                        <tr><th style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px;">평가 및 향후 계획</th><td style="border: 1px solid #cbd5e1; padding: 12px; white-space: pre-wrap;">${formattedPlan}</td></tr>
+                        <tr><th style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px;">다음 활동 일시</th><td style="border: 1px solid #cbd5e1; padding: 12px;">${nextDateText}</td></tr>
+                        <tr><th style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px;">다음 활동 참여 예정자</th><td style="border: 1px solid #cbd5e1; padding: 12px;">${fields.nextParticipants || ''}</td></tr>
+                        <tr><th style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px;">기타</th><td style="border: 1px solid #cbd5e1; padding: 12px; white-space: pre-wrap;">${fields.etc || ''}</td></tr>
+                    </table>
+            `;
+            extraBlocks.forEach(b => {
+                if (b.type === 'text') html += `<p style="margin-top: 20px; white-space: pre-wrap; text-align: left;">${b.content}</p>`;
+                else html += `<div style="text-align: left; margin: 20px 0;"><img src="${b.content}" style="max-width: 100%; border-radius: 8px;"></div>`;
+            });
+            html += `</div>`;
+            document.getElementById('renderedPost').innerHTML = html;
+        }
+
+        function copyHTML() {
+            const content = document.getElementById('renderedPost').innerHTML;
+            const temp = document.createElement('textarea');
+            temp.value = content;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showToast("코드가 복사되었습니다!");
+        }
+
+        function getReportData() {
+            const fields = {};
+            document.querySelectorAll('.form-field').forEach(f => fields[f.dataset.key] = f.value);
+            return {
+                title: document.getElementById('postTitle').value,
+                date: { 
+                    day: document.getElementById('inputDateDay').value, 
+                    sAmpm: document.getElementById('startAmpm').value,
+                    sH: document.getElementById('startHour').value, 
+                    sM: document.getElementById('startMin').value,
+                    eAmpm: document.getElementById('endAmpm').value,
+                    eH: document.getElementById('endHour').value,
+                    eM: document.getElementById('endMin').value
+                },
+                nextDate: {
+                    day: document.getElementById('nextDateDay').value,
+                    ampm: document.getElementById('nextDateAmpm').value,
+                    hour: document.getElementById('nextDateHour').value,
+                    min: document.getElementById('nextDateMin').value
+                },
+                location: { select: document.getElementById('selectLocation').value, text: document.getElementById('inputLocationText').value },
+                memberCount: document.getElementById('memberCount').value,
+                participantNames: document.getElementById('participantNames').value,
+                fields: fields, extraBlocks: extraBlocks
+            };
+        }
+
+        function downloadHTML() {
+            const content = document.getElementById('renderedPost').innerHTML;
+            const title = document.getElementById('postTitle').value || '활동일지';
+            const rawData = JSON.stringify(getReportData());
+            const fullHtml = `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>${title}</title><script type="application/json" id="report-data">${rawData}<\/script></head><body>${content}</body></html>`;
+            const blob = new Blob([fullHtml], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = title + '.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("파일로 저장되었습니다!");
+        }
+
+        function importHTML(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(e.target.result, 'text/html');
+                        const dataScript = doc.getElementById('report-data');
+                        if (!dataScript) { showToast("데이터가 없는 파일입니다."); return; }
+                        const data = JSON.parse(dataScript.textContent);
+                        document.getElementById('postTitle').value = data.title || "";
+                        if(data.date) {
+                            document.getElementById('inputDateDay').value = data.date.day || "";
+                            document.getElementById('startAmpm').value = data.date.sAmpm || "오전";
+                            document.getElementById('startHour').value = data.date.sH || "01";
+                            document.getElementById('startMin').value = data.date.sM || "00";
+                            document.getElementById('endAmpm').value = data.date.eAmpm || "오전";
+                            document.getElementById('endHour').value = data.date.eH || "01";
+                            document.getElementById('endMin').value = data.date.eM || "00";
+                        }
+                        if(data.nextDate) {
+                            document.getElementById('nextDateDay').value = data.nextDate.day || "";
+                            document.getElementById('nextDateAmpm').value = data.nextDate.ampm || "오전";
+                            document.getElementById('nextDateHour').value = data.nextDate.hour || "01";
+                            document.getElementById('nextDateMin').value = data.nextDate.min || "00";
+                        }
+                        document.getElementById('selectLocation').value = data.location.select || "";
+                        document.getElementById('inputLocationText').value = data.location.text || "";
+                        if(data.memberCount !== undefined) document.getElementById('memberCount').value = data.memberCount;
+                        if(data.participantNames !== undefined) document.getElementById('participantNames').value = data.participantNames;
+                        Object.keys(data.fields).forEach(key => {
+                            const field = document.querySelector(`.form-field[data-key="${key}"]`);
+                            if (field) field.value = data.fields[key];
+                        });
+                        extraBlocks = data.extraBlocks || [];
+                        renderExtraEditor();
+                        updatePreview();
+                        showToast("파일을 불러왔습니다!");
+                    } catch (err) { showToast("오류가 발생했습니다."); }
+                };
+                reader.readAsText(input.files[0]);
+                input.value = "";
+            }
+        }
+        updatePreview();
+    </script>
+</body>
+</html>
